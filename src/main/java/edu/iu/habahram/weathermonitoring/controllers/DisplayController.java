@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/displays")
 public class DisplayController {
     private CurrentConditionDisplay currentConditionDisplay;
+    private StatisticsDisplay statisticsDisplay;
 
-    public DisplayController(CurrentConditionDisplay currentConditionDisplay
-                             ) {
+    public DisplayController(CurrentConditionDisplay currentConditionDisplay,
+                             StatisticsDisplay statisticsDisplay) {
         this.currentConditionDisplay = currentConditionDisplay;
+        this.statisticsDisplay = statisticsDisplay;
     }
 
     @GetMapping
@@ -25,6 +27,9 @@ public class DisplayController {
         html += "<ul>";
         html += "<li>";
         html += String.format("<a href=/displays/%s>%s</a>", currentConditionDisplay.id(), currentConditionDisplay.name());
+        html += "</li>";
+        html += "<li>";
+        html += String.format("<a href=/displays/%s>%s</a>", statisticsDisplay.id(), statisticsDisplay.name());
         html += "</li>";
 
         html += "</ul>";
@@ -41,6 +46,9 @@ public class DisplayController {
         if (id.equalsIgnoreCase(currentConditionDisplay.id())) {
             html = currentConditionDisplay.display();
             status = HttpStatus.FOUND;
+        } else if (id.equalsIgnoreCase(statisticsDisplay.id())) {
+            html = statisticsDisplay.display();
+            status = HttpStatus.FOUND;
         }
         return ResponseEntity
                 .status(status)
@@ -53,6 +61,10 @@ public class DisplayController {
         HttpStatus status = null;
         if (id.equalsIgnoreCase(currentConditionDisplay.id())) {
             currentConditionDisplay.subscribe();
+            html = "Subscribed!";
+            status = HttpStatus.FOUND;
+        } else if (id.equalsIgnoreCase(statisticsDisplay.id())) {
+            statisticsDisplay.subscribe();
             html = "Subscribed!";
             status = HttpStatus.FOUND;
         } else {
